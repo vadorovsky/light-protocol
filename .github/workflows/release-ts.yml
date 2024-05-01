@@ -1,0 +1,56 @@
+name: Release TypeScript project
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Extract project name from tag
+        id: extract-project
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          PROJECT_NAME="$(echo "$TAG_NAME" | rev | cut -d'-' -f2- | rev)"
+          if [[ "$PROJECT_NAME" == *"circuit-lib.js"* ]]; then
+            SUBDIR="circuit-lib/circuit-lib.js"
+          elif [[ "$PROJECT_NAME" == *"cli"* ]]; then
+            SUBDIR="cli"
+          elif [[ "$PROJECT_NAME" == *"compressed-token"* ]]; then
+            SUBDIR="js/compressed-token"
+          elif [[ "$PROJECT_NAME" == *"prover.js"* ]]; then
+            SUBDIR="prover.js"
+          elif [[ "$PROJECT_NAME" == *"stateless.js"* ]]; then
+            SUBDIR="js/stateless.js"
+          fi
+          echo "project='$PROJECT_NAME'" >> "$GITHUB_OUTPUT"
+          echo "subdir='$SUBDIR'" >> "$GITHUB_OUTPUT"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.4.0
+        with:
+          version: 8
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Publish packages
+        run: |
+            cd "${{ steps.extract-project.outputs.subdir }}"
+            pnpm publish --access public --no-git-checks
+        shell: bash
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

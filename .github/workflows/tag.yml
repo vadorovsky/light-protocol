@@ -14,38 +14,50 @@ jobs:
         with:
           submodules: true
 
-      - name: Auto Tag
-        run: |
-          COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
-          if [[ "$COMMIT_AUTHOR" == "github-actions"* ]]; then
-            CHANGED_FILES=$(git --no-pager show @ --name-only)
-            PACKAGE_NAME=""
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.4.0
+        with:
+          version: 8
+          run_install: false
 
-            if [[ "$CHANGED_FILES" == *"macros/aligned-sized"* ]]; then
-              PACKAGE_NAME="aligned-sized"
-            elif [[ "$CHANGED_FILES" == *"macros/light"* ]]; then
-              PACKAGE_NAME="light-macros"
-            elif [[ "$CHANGED_FILES" == *"programs/merkle-tree"* ]]; then
-              PACKAGE_NAME="light-merkle-tree-program"
-            elif [[ "$CHANGED_FILES" == *"psp2in2out"* ]]; then
-              PACKAGE_NAME="light-psp2in2out"
-            elif [[ "$CHANGED_FILES" == *"psp10in2out"* ]]; then
-              PACKAGE_NAME="light-psp10in2out"
-            elif [[ "$CHANGED_FILES" == *"psp4in4out-app-storage"* ]]; then
-              PACKAGE_NAME="light-psp4in4out-app-storage"
-            elif [[ "$CHANGED_FILES" == *"psp2in2out-storage"* ]]; then
-              PACKAGE_NAME="light-psp2in2out-storage"
-            elif [[ "$CHANGED_FILES" == *"verifier-sdk"* ]]; then
-              PACKAGE_NAME="light-verifier-sdk"
-            elif [[ "$CHANGED_FILES" == *"macro-circom"* ]]; then
-              PACKAGE_NAME="macro-circom"
-            fi
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+
+      - name: Auto Tag
+        shell: bash
+        run: |
+          set -eux
+
+          function rust_version() {
+            cargo pkgid -p $1 | cut -d "@" -f2
+          }
+
+          function ts_version() {
+            pnpm list --filter $1 --depth 0 --json | jq -r '.[0].version'
+          }
+
+          COMMIT_MESSAGE=$(git log -1 --pretty=format:'%s')
+          if [[ "$COMMIT_MESSAGE" == *"bump version of"* ]]; then
+            PACKAGE_NAME=$(echo "$COMMIT_MESSAGE" | grep -o "bump version of [^ ]*" | cut -d " " -f4)
 
             if [[ -n "$PACKAGE_NAME" ]]; then
-              NEW_TAG="v$(cargo metadata --format-version=1  | jq -r ".packages[] | select(.name == \"$PACKAGE_NAME\") | .version" | head -n 1)"
-              git config user.name "GitHub Actions"
-              git config user.email "github-actions@github.com"
-              git tag "${PACKAGE_NAME}-${NEW_TAG}"
-              git push origin "${PACKAGE_NAME}-${NEW_TAG}"
+              # First try getting the Rust version.
+              VERSION=$(rust_version "$PACKAGE_NAME")
+              if [[ -z "$VERSION" ]]; then
+                # If no version was found, try the TypeScript version.
+                VERSION=$(ts_version "$PACKAGE_NAME")
+              fi
+
+              if [[ -n "$VERSION" ]]; then
+                echo "Creating tag for package: $PACKAGE_NAME v$VERSION"
+
+                NEW_TAG="v$VERSION"
+                git config user.name "GitHub Actions"
+                git config user.email "github-actions@github.com"
+                git tag "${PACKAGE_NAME}-${NEW_TAG}"
+                git push origin "${PACKAGE_NAME}-${NEW_TAG}"
+              fi
             fi
           fi

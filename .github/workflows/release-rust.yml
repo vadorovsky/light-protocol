@@ -42,17 +42,11 @@ jobs:
           echo "artifact=$ARTIFACT" >> "$GITHUB_OUTPUT"
 
       - name: Prepare artifacts
+        env:
+          ARTIFACT: ${{ steps.extract-crate.outputs.artifact }}
         run: |
-          if [[ "$CRATE_NAME" == *"account-compression"* ]]; then
-            cp target/deploy/account_compression.so .
-          elif [[ "$CRATE_NAME" == *"light-compressed-pda"* ]]; then
-            cp target/deploy/light_compressed_pda.so .
-          elif [[ "$CRATE_NAME" == *"light-compressed-token"* ]]; then
-            cp target/deploy/light_compressed_token.so .
-          elif [[ "$CRATE_NAME" == *"light-user-registry"* ]]; then
-            cp target/deploy/light_user_registry.so .
-          elif [[ "$CRATE_NAME" == *"light-registry"* ]]; then
-            cp target/deploy/light_registry.so .
+          if [[ -n "$ARTIFACT" ]]; then
+            cp "target/deploy/$ARTIFACT" .
           fi
 
       - name: Release
