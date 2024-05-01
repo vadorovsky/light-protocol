@@ -1,7 +1,11 @@
 [package]
 name = "light-circuitlib-rs"
 version = "0.1.0"
+description = "Crate for interacting with Light Protocol circuits"
+repository = "https://github.com/Lightprotocol/light-protocol"
+license = "Apache-2.0"
 edition = "2021"
+
 [features]
 gnark = ["tokio", "reqwest"]
 default = ["gnark"]

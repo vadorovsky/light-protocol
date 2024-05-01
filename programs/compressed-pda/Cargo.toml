@@ -1,7 +1,8 @@
 [package]
 name = "light-compressed-pda"
 version = "0.3.0"
-description = "Registry for Light Protocol users"
+description = "Generalized PDA compression on Solana"
+repository = "https://github.com/Lightprotocol/light-protocol"
 license = "Apache-2.0"
 edition = "2021"
 

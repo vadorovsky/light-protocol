@@ -1,7 +1,9 @@
 [package]
 name = "token-escrow"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "Solana escrow implementation using account compression"
+repository = "https://github.com/Lightprotocol/light-protocol"
+license = "Apache-2.0"
 edition = "2021"
 
 [lib]

@@ -1,7 +1,9 @@
 [package]
 name = "program-owned-account-test"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "Test program using generalized account compression"
+repository = "https://github.com/Lightprotocol/light-protocol"
+license = "Apache-2.0"
 edition = "2021"
 
 [lib]
