@@ -1,0 +1,77 @@
+name: Open a TypeScript release PR
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package to release
+        required: true
+        type: choice
+        options:
+          - all
+          - circuit-lib.js
+          - cli
+          - compressed-token
+          - prover.js
+          - stateless.js
+      version:
+        description: Version to release
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+          - premajor
+          - preminor
+          - prepatch
+          - prerelease
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.4.0
+        with:
+          version: 8
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Determine the subdirectory
+        id: subdir
+        run: |
+          PROJECT_NAME="${{ inputs.package }}"
+          SUBDIR=""
+          if [[ "$PROJECT_NAME" == *"circuit-lib.js"* ]]; then
+            SUBDIR="circuit-lib/circuit-lib.js"
+          elif [[ "$PROJECT_NAME" == *"cli"* ]]; then
+            SUBDIR="cli"
+          elif [[ "$PROJECT_NAME" == *"compressed-token"* ]]; then
+            SUBDIR="js/compressed-token"
+          elif [[ "$PROJECT_NAME" == *"prover.js"* ]]; then
+            SUBDIR="prover.js"
+          elif [[ "$PROJECT_NAME" == *"stateless.js"* ]]; then
+            SUBDIR="js/stateless.js"
+          fi
+          echo "subdir='$SUBDIR'" >> "$GITHUB_OUTPUT"
+
+      - name: Bump package version
+        run: |
+          cd ${{ steps.subdir.outputs.subdir }}
+          pnpm version ${{ inputs.version }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        env:
+          COMMIT_MESSAGE: "chore: bump version of ${{ inputs.package }}"
+        with:
+          commit-message: ${{ env.COMMIT_MESSAGE }}
+          title: ${{ env.COMMIT_MESSAGE }}
+          branch: "bump-${{ inputs.package }}-to-${{ inputs.version }}"
+          labels: "version bump"
+
