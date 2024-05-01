@@ -17,9 +17,8 @@ on:
           - light-macros
           - light-merkle-tree-event
           - light-merkle-tree-reference
-          - light-protocol
+          - light-registry
           - light-test-utils
-          - light-user-registry
           - light-utils
           - light-wasm-hasher
           - account-compression
@@ -57,8 +56,17 @@ jobs:
           tar -xzvf cargo-release-"$VERSION"-x86_64-unknown-linux-gnu.tar.gz --wildcards '*cargo-release' --strip-components=1
           cp cargo-release "$HOME"/.cargo/bin
 
-      - uses: cargo-bins/release-pr@v2
+      - name: Bump crate version
+        run: |
+          cargo release version --execute --no-confirm \
+            -p "${{ inputs.crate }}" "${{ inputs.version }}"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        env:
+          COMMIT_MESSAGE: "chore: bump version of ${{ inputs.crate }} to ${{ inputs.version }}"
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          version: ${{ inputs.version }}
-          crate-name: ${{ inputs.crate }}
+          commit-message: ${{ env.COMMIT_MESSAGE }}
+          title: ${{ env.COMMIT_MESSAGE }}
+          branch: "bump-${{ inputs.crate }}-to-${{ inputs.version }}"
+          labels: "version bump"
