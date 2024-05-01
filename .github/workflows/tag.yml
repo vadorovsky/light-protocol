@@ -21,24 +21,40 @@ jobs:
             CHANGED_FILES=$(git --no-pager show @ --name-only)
             PACKAGE_NAME=""
 
-            if [[ "$CHANGED_FILES" == *"macros/aligned-sized"* ]]; then
+            if [[ "$CHANGED_FILES" == *"circuit-lib/circuit-lib.js"* ]]; then
+              PACKAGE_NAME="circuit-lib.js"
+            elif [[ "$CHANGED_FILES" == *"cli"* ]]; then
+              PACKAGE_NAME="cli"
+            elif [[ "$CHANGED_FILES" == *"js/compressed-token"* ]]; then
+              PACKAGE_NAME="compressed-token"
+            elif [[ "$CHANGED_FILES" == *"js/stateless.js"* ]]; then
+              PACKAGE_NAME="stateless.js"
+            elif [[ "$CHANGED_FILES" == *"prover.js"* ]]; then
+              PACKAGE_NAME="prover.js"
+            elif [[ "$CHANGED_FILES" == *"macros/aligned-sized"* ]]; then
               PACKAGE_NAME="aligned-sized"
             elif [[ "$CHANGED_FILES" == *"macros/light"* ]]; then
               PACKAGE_NAME="light-macros"
-            elif [[ "$CHANGED_FILES" == *"programs/merkle-tree"* ]]; then
-              PACKAGE_NAME="light-merkle-tree-program"
-            elif [[ "$CHANGED_FILES" == *"psp2in2out"* ]]; then
-              PACKAGE_NAME="light-psp2in2out"
-            elif [[ "$CHANGED_FILES" == *"psp10in2out"* ]]; then
-              PACKAGE_NAME="light-psp10in2out"
-            elif [[ "$CHANGED_FILES" == *"psp4in4out-app-storage"* ]]; then
-              PACKAGE_NAME="light-psp4in4out-app-storage"
-            elif [[ "$CHANGED_FILES" == *"psp2in2out-storage"* ]]; then
-              PACKAGE_NAME="light-psp2in2out-storage"
-            elif [[ "$CHANGED_FILES" == *"verifier-sdk"* ]]; then
-              PACKAGE_NAME="light-verifier-sdk"
-            elif [[ "$CHANGED_FILES" == *"macro-circom"* ]]; then
-              PACKAGE_NAME="macro-circom"
+            elif [[ "$CHANGED_FILES" == *"merkle-tree/bounded-vec"* ]]; then
+              PACKAGE_NAME="light-bounded-vec"
+            elif [[ "$CHANGED_FILES" == *"merkle-tree/concurrent"* ]]; then
+              PACKAGE_NAME="light-concurrent-merkle-tree"
+            elif [[ "$CHANGED_FILES" == *"merkle-tree/hash-set"* ]]; then
+              PACKAGE_NAME="light-hash-set"
+            elif [[ "$CHANGED_FILES" == *"merkle-tree/hasher"* ]]; then
+              PACKAGE_NAME="light-hasher"
+            elif [[ "$CHANGED_FILES" == *"merkle-tree/indexed"* ]]; then
+              PACKAGE_NAME="light-indexed-merkle-tree"
+            elif [[ "$CHANGED_FILES" == *"merkle-tree/reference"* ]]; then
+              PACKAGE_NAME="light-merkle-tree-reference"
+            elif [[ "$CHANGED_FILES" == *"programs/account-compression"* ]]; then
+              PACKAGE_NAME="account-compression"
+            elif [[ "$CHANGED_FILES" == *"programs/compressed-pda"* ]]; then
+              PACKAGE_NAME="light-compressed-pda"
+            elif [[ "$CHANGED_FILES" == *"programs/compressed-token"* ]]; then
+              PACKAGE_NAME="light-compressed-token"
+            elif [[ "$CHANGED_FILES" == *"programs/registry"* ]]; then
+              PACKAGE_NAME="light-registry"
             fi
 
             if [[ -n "$PACKAGE_NAME" ]]; then

@@ -17,9 +17,8 @@ on:
           - light-macros
           - light-merkle-tree-event
           - light-merkle-tree-reference
-          - light-protocol
+          - light-registry
           - light-test-utils
-          - light-user-registry
           - light-utils
           - light-wasm-hasher
           - account-compression
