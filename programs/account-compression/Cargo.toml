@@ -30,7 +30,7 @@ light-bounded-vec = { version = "0.1.0", path = "../../merkle-tree/bounded-vec",
 light-hash-set = { version = "0.1.0", path = "../../merkle-tree/hash-set", features = ["solana"] }
 light-hasher = { version = "0.1.0", path = "../../merkle-tree/hasher", features = ["solana"] }
 light-heap = { version = "0.1.0", path = "../../heap", optional = true }
-light-concurrent-merkle-tree = { version = "0.1.0", path = "../../merkle-tree/concurrent", features = ["solana"] }
+light-concurrent-merkle-tree = { version = "0.1.1", path = "../../merkle-tree/concurrent", features = ["solana"] }
 light-indexed-merkle-tree = { version = "0.1.0", path = "../../merkle-tree/indexed", features = ["solana"] }
 light-utils = { version = "0.1.0", path = "../../utils" }
 light-macros = { version = "0.3.1", path = "../../macros/light/" }
