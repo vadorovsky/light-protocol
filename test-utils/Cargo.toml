@@ -29,7 +29,7 @@ light-compressed-pda = { path = "../programs/compressed-pda", version = "0.3.0",
 light-registry = { path = "../programs/registry", version = "0.3.0", features = ["cpi"],  optional= true }
 spl-token = { version="3.5.0", features = ["no-entrypoint"] }
 tokio = "1.36"
-light-circuitlib-rs = { path = "../circuit-lib/circuitlib-rs", version = "0.1.0" }
+light-circuitlib-rs = { path = "../circuit-lib/circuitlib-rs", version = "0.1.1" }
 reqwest = "0.11.26"
 light-hasher = { version = "0.1.0", path = "../merkle-tree/hasher" }
 light-merkle-tree-reference = { version = "0.1.0", path = "../merkle-tree/reference" }
