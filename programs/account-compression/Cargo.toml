@@ -21,7 +21,7 @@ default = ["custom-heap", "mem-profiling"]
 test-sbf = []
 
 [dependencies]
-aligned-sized = { version = "0.1.0", path = "../../macros/aligned-sized" }
+aligned-sized = { version = "0.1.1", path = "../../macros/aligned-sized" }
 anchor-lang = "0.29.0"
 ark-ff = "0.4.0"
 borsh = "0.10.3"
